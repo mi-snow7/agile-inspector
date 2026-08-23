@@ -1,0 +1,1697 @@
+/* Design tokens derived from the Atlassian Design System, post-2025-refresh
+   values (atlassian.design/DESIGN.md, then verified against the inline token
+   sheet of a live Jira Cloud page — both light and dark blocks below are the
+   values Jira actually ships): surface #FFF over sunken #F8F8F8 wells,
+   near-neutral text #292A2E, brand blue #1868DB, the weak double card
+   shadow, and the 4/6/8/12px radius scale. This deliberately replaces the
+   ai-asset-analyzer/shadcn token set — the goal is "reads as Jira", not
+   cross-product consistency. Values only; no Atlassian fonts, icons or
+   logos are imitated. */
+:root {
+  --background: #ffffff; /* elevation.surface */
+  --surface-sunken: #f8f8f8; /* elevation.surface.sunken — board column wells */
+  --foreground: #292a2e; /* color.text */
+  --card: #ffffff; /* elevation.surface.raised (pairs with --shadow-sm) */
+  --card-foreground: #292a2e;
+  --popover: #ffffff;
+  --popover-foreground: #292a2e;
+  --primary: #1868db; /* brand blue */
+  --primary-foreground: #ffffff;
+  --secondary: rgba(5, 21, 36, 0.06); /* color.background.neutral */
+  --secondary-foreground: #505258;
+  --muted: #f8f8f8;
+  --muted-foreground: #505258; /* color.text.subtle */
+  --subtlest: #6b6e76; /* color.text.subtlest */
+  --accent: #e9f2fe; /* color.background.selected */
+  --accent-foreground: #1868db;
+  --destructive: #c9372c;
+  --destructive-foreground: #ffffff;
+  --border: rgba(11, 18, 14, 0.14); /* hairline */
+  --input: rgba(11, 18, 14, 0.14);
+  --ring: #4688ec; /* color.border.focused */
+
+  /* ADS radius scale: lozenges 4, controls 6, cards/wells 8, modals 12 */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
+
+  /* elevation.shadow.raised / .overlay — the weak double shadow that lets
+     borderless cards read as floating on the well */
+  --shadow-sm: 0 1px 1px rgba(30, 31, 33, 0.25), 0 0 1px rgba(30, 31, 33, 0.31);
+  --shadow-md: 0 8px 12px rgba(30, 31, 33, 0.15), 0 0 1px rgba(30, 31, 33, 0.31);
+  --shadow-lg: 0 12px 24px rgba(30, 31, 33, 0.25), 0 0 1px rgba(30, 31, 33, 0.31);
+
+  /* Status tints on the ADS lozenge recipe: subtlest background + dark text
+     of the same hue (accent-red/yellow/green/purple/blue pairs). */
+  --prio-high-bg: #ffeceb;
+  --prio-high-fg: #ae2e24;
+  --prio-mid-bg: #fef7c8;
+  --prio-mid-fg: #7f5f01;
+  --prio-low-bg: #dcfff1;
+  --prio-low-fg: #216e4e;
+  --milestone-bg: #f8eefe;
+  --milestone-fg: #803fa5;
+  --wip-bg: #e9f2fe;
+  --wip-fg: #1558bc;
+  --hint-bg: #fef7c8;
+  --hint-fg: #7f5f01;
+  /* WIP breach tints the whole column, Jira-style, not just the count badge */
+  --wip-over-surface: #ffeceb;
+
+  /* Hover states are named colours, not an opacity fade. Fading a button
+     towards the page is fine on a white page and wrong on a dark one: the
+     button sinks into the background and takes its label with it. ADS gives
+     each background an explicit .hovered value, and both themes below use
+     theirs. */
+  --primary-hover: #1558bc; /* color.background.brand.bold.hovered */
+  --hover-overlay: #f1f2f4; /* color.background.neutral.subtle.hovered */
+
+  /* Bold status lozenges, Jira's board-card recipe: To Do stays neutral,
+     the two in-flight statuses are blue on white text, Done is green. The
+     pale border is what keeps them legible against a dark card. */
+  --status-todo-bg: rgba(5, 21, 36, 0.06);
+  --status-todo-fg: #505258;
+  --status-todo-border: rgba(11, 18, 14, 0.14);
+  --status-doing-bg: #1868db;
+  --status-doing-fg: #ffffff;
+  --status-doing-border: #8fb8f6;
+  --status-review-bg: #123263;
+  --status-review-fg: #ffffff;
+  --status-review-border: #8fb8f6;
+  --status-done-bg: #216e4e;
+  --status-done-fg: #ffffff;
+  --status-done-border: #7ee2b8;
+
+  /* One column width for all three board views. The plain board had a fixed
+     270px while both swimlane views used 1fr and stretched to the window, so
+     the same four columns were three different widths depending on the
+     grouping — and on a wide screen the swimlane ones were absurdly long.
+     270 + 10%. */
+  --board-col-w: 297px;
+  --board-col-gap: 8px;
+
+  /* Detail panel width — shared by the panel itself and by the room the
+     board makes for it, so the two can't drift apart. 420 → 480 because the
+     panel became the edit surface: a description is written in it now, not
+     just read. */
+  --detail-panel-w: 480px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ADS dark neutrals (current): surface #1F1F21, raised #242528,
+       overlay #2B2C2F, sunken #18191A */
+    --background: #1f1f21;
+    --surface-sunken: #18191a;
+    --foreground: #cecfd2;
+    --card: #242528;
+    --card-foreground: #cecfd2;
+    --popover: #2b2c2f;
+    --popover-foreground: #cecfd2;
+    --primary: #669df1;
+    --primary-foreground: #1f1f21;
+    --secondary: rgba(206, 206, 217, 0.07); /* color.background.neutral */
+    --secondary-foreground: #a9abaf;
+    --muted: #18191a;
+    --muted-foreground: #a9abaf; /* color.text.subtle */
+    --subtlest: #96999e; /* color.text.subtlest */
+    --accent: #1c2b42; /* color.background.selected */
+    --accent-foreground: #669df1;
+    --destructive: #f87168;
+    --destructive-foreground: #1f1f21;
+    --border: rgba(227, 228, 242, 0.12);
+    --input: rgba(227, 228, 242, 0.12);
+    --ring: #8fb8f6; /* color.border.focused */
+
+    /* Dark elevation.shadow.raised / .overlay — the overlay gains a faint
+       1px ring so panels separate from the surface without ambient light */
+    --shadow-sm: 0 1px 1px rgba(1, 4, 4, 0.5), 0 0 1px rgba(1, 4, 4, 0.5);
+    --shadow-md: 0 0 0 1px rgba(189, 189, 189, 0.12), 0 8px 12px rgba(1, 4, 4, 0.36),
+      0 0 1px 1px rgba(1, 4, 4, 0.5);
+    --shadow-lg: 0 0 0 1px rgba(189, 189, 189, 0.12), 0 12px 24px rgba(1, 4, 4, 0.5),
+      0 0 1px 1px rgba(1, 4, 4, 0.56);
+
+    --prio-high-bg: #42221f;
+    --prio-high-fg: #fd9891;
+    --prio-mid-bg: #332e1b;
+    --prio-mid-fg: #eed12b;
+    --prio-low-bg: #1c3329;
+    --prio-low-fg: #7ee2b8;
+    --milestone-bg: #35243f;
+    --milestone-fg: #d8a0f7;
+    --wip-bg: #1c2b42;
+    --wip-fg: #8fb8f6;
+    --hint-bg: #332e1b;
+    --hint-fg: #eed12b;
+    --wip-over-surface: #42221f;
+
+    /* Both hovers move *towards* the light here, the opposite direction from
+       the light theme. That's the whole point of naming them. */
+    --primary-hover: #8fb8f6; /* dark brand.bold.hovered */
+    --hover-overlay: rgba(206, 206, 217, 0.1); /* neutral.subtle.hovered */
+
+    --status-todo-bg: rgba(206, 206, 217, 0.07);
+    --status-todo-fg: #a9abaf;
+    --status-todo-border: rgba(227, 228, 242, 0.12);
+    /* The bold blues/green carry over: they read as lozenges against the dark
+       card too, and keeping one value per status means Doing looks the same
+       colour to someone screen-sharing in light mode. */
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+button,
+.link-button {
+  font: inherit;
+  cursor: pointer;
+  /* Without these, a long sibling (a card title) squeezes the button down to
+     its min-content width and the label wraps one character per line. */
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  border-radius: var(--radius-md);
+  padding: 5px 12px;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    transform 80ms ease;
+}
+.link-button {
+  display: inline-block;
+  text-decoration: none;
+  line-height: 1.2;
+}
+button:hover:not(:disabled),
+.link-button:hover {
+  background: var(--hover-overlay);
+}
+button:active:not(:disabled),
+.link-button:active {
+  transform: translateY(1px);
+}
+button:focus-visible,
+.link-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+button.button--primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+button.button--primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+button.button--danger {
+  color: var(--destructive);
+  border-color: var(--border);
+}
+button.button--danger:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--destructive) 12%, var(--card));
+  border-color: var(--destructive);
+}
+
+.board-status {
+  padding: 40px;
+  font-size: 15px;
+  color: var(--muted-foreground);
+}
+.board-status--error {
+  color: var(--destructive);
+}
+
+/* Rides above the board rather than replacing it, so a failed refresh leaves
+   the cards visible and the error itself long enough to read. */
+.board-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--destructive);
+  border-radius: 6px;
+  color: var(--destructive);
+}
+
+.board-error-banner__text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.board-page {
+  padding: 16px 20px;
+}
+/* Jira shrinks the board to make room for the issue panel rather than
+   covering the last column with it. Wide screens do that; below the
+   breakpoint there isn't room to give, so the panel falls back to covering
+   the board (which is what Notion does at every width). */
+@media (min-width: 900px) {
+  .board-page--panel-open {
+    padding-right: calc(var(--detail-panel-w) + 20px);
+  }
+}
+.board-page {
+  transition: padding-right 140ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .board-page {
+    transition: none;
+  }
+}
+
+.board-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.board-header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+.board-header__mode {
+  font-size: 12px;
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  padding: 3px 10px;
+  border-radius: var(--radius-2xl);
+}
+
+.view-switch {
+  display: flex;
+  gap: 2px;
+  background: var(--muted);
+  border-radius: var(--radius-2xl);
+  padding: 2px;
+}
+.view-switch__btn {
+  font-size: 12px;
+  padding: 3px 12px;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-2xl);
+}
+.view-switch__btn:hover:not(:disabled) {
+  background: var(--hover-overlay);
+  color: var(--foreground);
+}
+/* The selected tab used to be --card on a --muted track: one step of grey
+   apart, which is invisible on a dark theme and nearly so on a light one.
+   ADS marks selection with the blue background.selected pair, and it's the
+   same pair the WIP badge already uses — so "which board am I on" and
+   "which swimlane grouping is on" are now readable at a glance. */
+.view-switch__btn--active,
+.view-switch__btn--active:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--wip-fg);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-switch--sub {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+.view-switch__label {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  padding: 0 4px 0 8px;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.board-columns {
+  display: flex;
+  gap: var(--board-col-gap);
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+/* ---- backlog screen: plan here, track on the board ---- */
+.backlog {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sprint-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-xl);
+  padding: 12px 14px;
+  background: var(--muted);
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+.sprint-dropzone--over {
+  border-color: var(--ring);
+  background: var(--accent);
+}
+.sprint-dropzone__label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.sprint-dropzone__hint {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+}
+.backlog__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.backlog__count {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-right: auto;
+}
+.bucket {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.bucket--over {
+  outline: 2px dashed var(--ring);
+  outline-offset: -2px;
+}
+.bucket__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.bucket--high .bucket__header {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+}
+.bucket--mid .bucket__header {
+  background: var(--prio-mid-bg);
+  color: var(--prio-mid-fg);
+}
+.bucket--low .bucket__header {
+  background: var(--prio-low-bg);
+  color: var(--prio-low-fg);
+}
+.bucket__count {
+  margin-left: auto;
+  font-weight: 400;
+  opacity: 0.8;
+}
+.bucket__items {
+  display: flex;
+  flex-direction: column;
+}
+.bucket__empty {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.backlog-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  touch-action: none;
+  min-width: 0;
+  transition: background-color 120ms ease;
+}
+.bucket__items > .backlog-row:first-child {
+  border-top: none;
+}
+.backlog-row:hover {
+  background: var(--muted);
+}
+.backlog-row.dragging {
+  opacity: 0.5;
+}
+.backlog-row__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.backlog-row__action {
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
+/* Jira's board anatomy: columns are sunken grey wells, cards float on them
+   with a shadow and no border. The well + subtle header is what tells the
+   five columns apart (this replaced the column emoji that used to do it). */
+.column {
+  flex: 0 0 var(--board-col-w);
+  /* Without this the column is a flex item at its automatic minimum size, so
+     a long sub-task title inside a card widens the whole column past its
+     declared basis and the board's columns stop lining up. Jira's columns are
+     a fixed width and the text truncates; so are ours now. */
+  min-width: 0;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  min-height: 200px;
+}
+.column--over {
+  outline: 2px dashed var(--ring);
+  outline-offset: -2px;
+}
+/* WIP breach: the whole column blushes, not just the count badge */
+.column--wip-over {
+  background: var(--wip-over-surface);
+}
+.column__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  margin: 2px 4px 8px;
+  color: var(--muted-foreground);
+}
+.column__count {
+  color: var(--subtlest);
+  font-weight: 400;
+}
+.wip-badge {
+  margin-left: auto;
+  font-size: 11px;
+  background: var(--wip-bg);
+  color: var(--wip-fg);
+  border-radius: var(--radius-2xl);
+  padding: 1px 9px;
+}
+.wip-badge--over {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+}
+.add-story-btn {
+  width: 100%;
+  margin-bottom: 8px;
+  font-size: 12px;
+  background: transparent;
+  border-style: dashed;
+  color: var(--muted-foreground);
+}
+.add-story-btn:hover:not(:disabled) {
+  background: var(--card);
+  color: var(--foreground);
+}
+.column__items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.story-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius-lg);
+  padding: 8px 10px;
+  box-shadow: var(--shadow-sm);
+  /* no border — the raised shadow against the sunken well is the edge */
+  touch-action: none;
+  transition:
+    box-shadow 120ms ease,
+    opacity 120ms ease;
+}
+.story-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.story-card.dragging {
+  opacity: 0.5;
+}
+.story-card__top {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  min-width: 0;
+}
+/* Trello/Jira-style card title: wraps, but only up to 3 lines, then ellipsis.
+   The full text stays available via the title tooltip. */
+.story-card__title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* a long unbroken token (URL, ID string) would otherwise refuse to wrap
+     and blow the card out past the column */
+  overflow-wrap: anywhere;
+}
+.story-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+/* Lozenge shape per ADS: small radius, not a pill */
+.badge {
+  font-size: 11px;
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  /* long milestone names truncate instead of stretching the badge row */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.badge--prio-high {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+}
+.badge--prio-mid {
+  background: var(--prio-mid-bg);
+  color: var(--prio-mid-fg);
+}
+.badge--prio-low {
+  background: var(--prio-low-bg);
+  color: var(--prio-low-fg);
+}
+.badge--milestone {
+  background: var(--milestone-bg);
+  color: var(--milestone-fg);
+}
+.badge--warning {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+  font-weight: 600;
+}
+.badge--progress {
+  background: var(--wip-bg);
+  color: var(--wip-fg);
+  font-variant-numeric: tabular-nums;
+}
+/* Story / Task / Bug are peers on the board — the type badge is what tells
+   a feature apart from a chore apart from a defect at a glance. */
+.badge--type-story {
+  background: var(--milestone-bg);
+  color: var(--milestone-fg);
+}
+.badge--type-task {
+  background: var(--wip-bg);
+  color: var(--wip-fg);
+}
+.badge--type-bug {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+}
+.badge--type-subtask {
+  background: var(--secondary);
+  color: var(--muted-foreground);
+}
+.task-card .badge {
+  align-self: flex-start;
+}
+/* actions live on their own row, bottom-right of the card */
+.story-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+}
+.story-card__actions button,
+.story-card__actions .link-button {
+  font-size: 11px;
+  padding: 3px 9px;
+}
+/* Jira card footer: type + key on the left, estimate + avatar on the right */
+.story-card__footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  min-width: 0;
+}
+.story-card__key {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--subtlest);
+  font-variant-numeric: tabular-nums;
+}
+.story-card__footer-spacer {
+  flex: 1;
+}
+.points-chip {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.avatar {
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
+  background: var(--secondary);
+}
+/* The empty seat. Dashed, like Jira's unassigned avatar, so it reads as
+   "nobody yet" rather than as a person whose picture failed to load. */
+.avatar--unassigned {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border);
+  background: transparent;
+  filter: grayscale(1);
+  opacity: 0.75;
+  line-height: 1;
+  cursor: help;
+}
+/* Full-width, properly sized hit target — the ▾ it replaces was an 11px
+   glyph with 2px of padding, which is neither readable as a control nor
+   comfortable to hit. */
+.story-card__disclosure {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 6px;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-md);
+}
+.story-card__disclosure:hover:not(:disabled) {
+  background: var(--hover-overlay);
+  color: var(--foreground);
+}
+.story-card__disclosure-icon {
+  color: var(--subtlest);
+}
+.story-card__disclosure-count {
+  color: var(--subtlest);
+  font-weight: 400;
+}
+.story-card__disclosure-caret {
+  margin-left: auto;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--muted-foreground);
+  transition: transform 120ms ease;
+}
+.story-card__disclosure[aria-expanded="true"] .story-card__disclosure-caret {
+  transform: rotate(90deg);
+}
+
+.story-card__tasks {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px dashed var(--border);
+  padding-top: 6px;
+}
+/* ---- work-item card body: sub-task rows on the plain board, and the
+       draggable cards in both swimlane views. One layout, so switching the
+       swimlane dropdown doesn't change what a piece of work looks like. ---- */
+.task-row,
+.task-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  padding: 6px 8px;
+  font-size: 13px;
+  touch-action: none;
+  transition: opacity 120ms ease;
+}
+.task-row.dragging,
+.task-card.dragging {
+  opacity: 0.5;
+}
+.work-item__head {
+  display: flex;
+  gap: 6px;
+  /* top, not centre: the ↳ and the key belong beside the title's first line */
+  align-items: flex-start;
+  min-width: 0;
+}
+.work-item__lead {
+  flex-shrink: 0;
+  color: var(--subtlest);
+  line-height: 1.45;
+}
+.work-item__key {
+  flex-shrink: 0;
+  color: var(--subtlest);
+  line-height: 1.45;
+}
+/* Its own flex item, which is what keeps a wrapped line from running back
+   under the ↳ and the key — the title occupies one column, three lines deep,
+   then truncates. The full text stays in the tooltip and the detail panel. */
+.work-item__title {
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.work-item__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* Bold status lozenge, per status — Jira's board-card recipe. Only drawn
+   where the surrounding column doesn't already say it. */
+.status-lozenge {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  color: var(--status-todo-fg);
+  background: var(--status-todo-bg);
+  border: 1px solid var(--status-todo-border);
+  border-radius: var(--radius-sm);
+  padding: 0 5px;
+  flex-shrink: 0;
+}
+.status-lozenge--backlog {
+  /* Backlog is the absence of a status, so it stays neutral rather than
+     claiming a colour of its own. */
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  border-color: var(--border);
+}
+.status-lozenge--doing {
+  color: var(--status-doing-fg);
+  background: var(--status-doing-bg);
+  border-color: var(--status-doing-border);
+}
+.status-lozenge--review {
+  color: var(--status-review-fg);
+  background: var(--status-review-bg);
+  border-color: var(--status-review-border);
+}
+.status-lozenge--done {
+  color: var(--status-done-fg);
+  background: var(--status-done-bg);
+  border-color: var(--status-done-border);
+}
+
+/* ---- swimlane (task) view: rows are stories, columns are statuses ---- */
+.swimlanes {
+  overflow-x: auto;
+}
+.swimlanes__inner {
+  /* Exactly as wide as the columns it contains, derived from the column
+     count so a sprint board (no Backlog column) doesn't reserve width for a
+     column it isn't drawing. Without this the lane band stretched to the
+     window while the fixed-width columns stopped short, leaving a stripe of
+     empty border to the right of Done. The +18px is the grid's 8px padding
+     either side plus the lane's 1px border. */
+  width: calc(
+    var(--swimlane-cols, 5) * (var(--board-col-w) + var(--board-col-gap)) - var(--board-col-gap) + 18px
+  );
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* Fixed columns, not 1fr: a lane's In Progress column has to be the same
+   width as the plain board's, or switching the swimlane dropdown reflows
+   every card. The lane itself still spans the page — it's the header band —
+   while the columns inside it stop where the plain board's do. */
+.swimlane__column-heads,
+.swimlane__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--swimlane-cols, 5), var(--board-col-w));
+  gap: var(--board-col-gap);
+}
+/* Same horizontal padding as the grid it labels — they used to differ, so
+   every head sat 4px off the column beneath it. */
+.swimlane__column-heads {
+  padding: 8px 8px 0;
+}
+.swimlanes__column-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--subtlest);
+  min-width: 0;
+}
+.swimlane {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+/* the catch-all lane reads as a footer, not as another story */
+.swimlane--others .swimlane__header {
+  background: transparent;
+}
+.swimlane--others .swimlane__title {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.swimlane__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+/* Matches .story-card__disclosure-caret — same glyph, same size, same turn,
+   so "開閉するもの" looks like one thing across the board. */
+.swimlane__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-md);
+}
+.swimlane__toggle:hover:not(:disabled) {
+  background: var(--hover-overlay);
+  color: var(--foreground);
+}
+.swimlane__toggle span {
+  transition: transform 120ms ease;
+}
+.swimlane__toggle[aria-expanded="true"] span {
+  transform: rotate(90deg);
+}
+.swimlane__title {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.swimlane__progress {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+/* actions sit at the right end of the lane band */
+.swimlane__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.swimlane__actions button,
+.swimlane__actions .link-button {
+  font-size: 11px;
+  padding: 3px 9px;
+}
+.swimlane__grid {
+  padding: 8px;
+  align-items: start;
+}
+.lane-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 52px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+.lane-cell--over {
+  outline: 2px dashed var(--ring);
+  outline-offset: -2px;
+}
+/* A swimlane card sits on the board itself rather than inside a story card,
+   so it's raised on --card instead of recessed on --muted. Layout, spacing
+   and type all come from the shared .task-row/.task-card rules above. */
+.task-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-sm);
+}
+
+.drag-overlay {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius-xl);
+  padding: 8px 12px;
+  font-size: 13px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in oklch, var(--foreground) 45%, transparent);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal {
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border-radius: var(--radius-2xl);
+  padding: 20px;
+  width: min(420px, 92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+.modal--wide {
+  width: min(640px, 92vw);
+}
+.modal h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  flex: 1;
+}
+.modal input,
+.modal select,
+.modal textarea {
+  font: inherit;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--foreground);
+  min-width: 0; /* flex children default to min-width:auto, which was
+  letting these overflow the modal instead of shrinking */
+  box-sizing: border-box;
+  width: 100%;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+.modal input:focus-visible,
+.modal select:focus-visible,
+.modal textarea:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 30%, transparent);
+}
+.modal textarea {
+  resize: vertical;
+  min-height: 4.5em;
+}
+/* type picker in the create dialog — Jira chooses the issue type inside
+   the one create dialog rather than having a create path per type */
+.type-picker {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  margin: 0;
+}
+.type-picker legend {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  padding: 0 4px;
+}
+.type-picker__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.type-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  cursor: pointer;
+}
+.type-option input {
+  margin: 0;
+  width: auto;
+}
+.type-option--active {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.type-picker__hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.story-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.story-form-row > label {
+  min-width: 160px;
+}
+.criterion-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.criterion-row input {
+  flex: 1;
+}
+.hint {
+  font-size: 12px;
+  color: var(--hint-fg);
+  background: var(--hint-bg);
+  border-radius: var(--radius-md);
+  padding: 6px 9px;
+}
+.error {
+  font-size: 12px;
+  color: var(--destructive);
+}
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* ---- retro (KPT) screen: three piles of sticky notes, no status columns ---- */
+.kpt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.kpt__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.kpt__round {
+  font-size: 13px;
+  font-weight: 600;
+}
+.kpt__hint {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-right: auto;
+}
+/* the three writable buckets sit side by side; the carried lane above them
+   spans the full width, because it is read at the start and then left alone */
+.kpt__buckets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+@media (max-width: 800px) {
+  .kpt__buckets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.kpt-bucket {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.kpt-bucket--over {
+  outline: 2px dashed var(--ring);
+  outline-offset: -2px;
+}
+.kpt-bucket__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.kpt--keep .kpt-bucket__header {
+  background: var(--prio-low-bg);
+  color: var(--prio-low-fg);
+}
+.kpt--problem .kpt-bucket__header {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+}
+.kpt--try .kpt-bucket__header {
+  background: var(--prio-mid-bg);
+  color: var(--prio-mid-fg);
+}
+.kpt-bucket__count {
+  margin-left: auto;
+  font-weight: 400;
+  opacity: 0.8;
+}
+.kpt-bucket__items {
+  display: flex;
+  flex-direction: column;
+  min-height: 40px;
+}
+.kpt-bucket__items--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+}
+.kpt-bucket__items--row .kpt-card {
+  border-bottom: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  flex: 0 1 320px;
+}
+.kpt-bucket__empty {
+  margin: 0;
+  padding: 2px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.kpt-bucket__compose {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+.kpt-bucket__compose input {
+  flex: 1;
+  min-width: 0;
+}
+.kpt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  cursor: grab;
+}
+.kpt-card--static {
+  cursor: default;
+}
+.kpt-card.dragging {
+  opacity: 0.5;
+}
+.kpt-card__title {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.kpt-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.kpt-card__action {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+.kpt-card__action + .kpt-card__action {
+  margin-left: 0;
+}
+.badge--round,
+.badge--kaizen {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+/* ---- detail panel: tap a card, its content slides in on the right ----
+   Jira/Notion's read-first flow. Deliberately *not* a modal: no backdrop, so
+   the board stays draggable behind it and the panel updates in place as
+   cards move. Everything it shows is already in the board payload, so
+   opening it costs no API call. */
+.detail-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(var(--detail-panel-w), 100vw);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  /* Below .modal-backdrop (100) — pressing 編集 stacks the edit dialog on
+     top of the panel rather than the other way round. */
+  z-index: 90;
+  animation: detail-panel-in 140ms ease-out;
+}
+@keyframes detail-panel-in {
+  from {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .detail-panel {
+    animation: none;
+  }
+}
+.detail-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.detail-panel__key {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.detail-panel__spacer {
+  flex: 1;
+}
+.detail-panel__close {
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 8px;
+}
+.detail-panel__scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.detail-panel__parent {
+  align-self: flex-start;
+  max-width: 100%;
+  font-size: 11px;
+  padding: 2px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.detail-panel__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.detail-panel__warning {
+  margin: 0;
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: var(--hint-bg);
+  color: var(--hint-fg);
+}
+.detail-panel__meta {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 8px 10px;
+  margin: 0;
+  font-size: 12px;
+  align-items: center;
+}
+.detail-panel__meta dt {
+  color: var(--subtlest);
+}
+.detail-panel__meta dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.detail-panel__section-title {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--subtlest);
+}
+.detail-panel__body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.detail-panel__empty {
+  color: var(--subtlest);
+}
+.detail-panel__subtask {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  font-size: 12px;
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+}
+.detail-panel__subtask:first-of-type {
+  border-top: none;
+}
+.detail-panel__subtask:hover {
+  background: var(--muted);
+}
+.detail-panel__subtask-col {
+  text-transform: uppercase;
+  font-size: 9px;
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  border-radius: var(--radius-sm);
+  padding: 0 5px;
+  flex-shrink: 0;
+}
+.detail-panel__subtask-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cards read as pressable now that a tap opens their detail. */
+.story-card,
+.task-card,
+.backlog-row {
+  cursor: pointer;
+}
+.task-row {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.task-row:hover {
+  background: var(--muted);
+}
+.swimlane__title--link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.swimlane__title--link:hover {
+  text-decoration: underline;
+}
+
+/* Sprint boards don't show what isn't in the sprint, but a status label that
+   drifted from its milestone still has to be findable — this is the one
+   inconsistency the GitHub backend can produce that Jira's single sprint
+   field cannot. */
+.board-stale-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  border-radius: var(--radius-md);
+  background: var(--hint-bg);
+  color: var(--hint-fg);
+}
+.board-stale-banner span {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The description is the form now, so it gets room to be one — and a
+   monospace-ish stack, because what goes in it is markdown with checklists
+   and headings that line up. */
+.issue-body {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 260px;
+  resize: vertical;
+}
+
+/* ---- inline editing in the detail panel ----
+   The idle state has to read as text, not as a form: a panel full of visible
+   input boxes is a form, which is what this replaces. So the affordance is
+   the hover — the box appears under the pointer and on focus, and otherwise
+   the field is just what it says. */
+.inline-edit {
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.inline-edit--idle:hover:not(:disabled) {
+  background: var(--hover-overlay);
+  border-color: var(--border);
+}
+.inline-edit--active {
+  background: var(--card);
+  border-color: var(--ring);
+  outline: none;
+  resize: vertical;
+}
+/* The title grows to fit instead of scrolling sideways; its height is set
+   from the content in InlineEdit, so it must not be resizable by hand or the
+   two would fight. */
+.detail-panel__title.inline-edit--active {
+  resize: none;
+  overflow: hidden;
+}
+.inline-edit__placeholder {
+  color: var(--subtlest);
+}
+.detail-panel__assignee {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.inline-select {
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+}
+.inline-select:hover:not(:disabled) {
+  background: var(--hover-overlay);
+  border-color: var(--border);
+}
+.inline-select:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+/* The type badge doubles as its own picker, the way Jira turns the issue-type
+   icon into a dropdown. Sized like the badge it replaced so the header keeps
+   its shape. */
+.detail-panel__type {
+  font: inherit;
+  font-size: 11px;
+  padding: 2px 4px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--foreground);
+}
+.detail-panel__type:hover {
+  background: var(--hover-overlay);
+  border-color: var(--border);
+}
+.detail-panel__type:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+/* ---- "⋯" menu, in the panel header ----
+   Replaces a footer strip of four equal-weight buttons, one of which closed
+   the issue. Destructive actions now sit under a rule, in their own colour,
+   at the end of the list. */
+.action-menu {
+  position: relative;
+  display: inline-flex;
+}
+.action-menu__trigger {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  line-height: 1;
+  border-radius: var(--radius-md);
+}
+.action-menu__trigger:hover:not(:disabled),
+.action-menu__trigger[aria-expanded="true"] {
+  background: var(--hover-overlay);
+  border-color: var(--border);
+  color: var(--foreground);
+}
+.action-menu__popup {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 60;
+  min-width: 200px;
+  padding: 4px;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.action-menu__group--danger {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+.action-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 13px;
+  text-align: left;
+  border-radius: var(--radius-md);
+}
+.action-menu__item:hover:not(:disabled) {
+  background: var(--hover-overlay);
+}
+.action-menu__item--danger {
+  color: var(--destructive);
+}
+.action-menu__item--danger:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+}
+.action-menu__icon {
+  width: 16px;
+  text-align: center;
+  color: var(--subtlest);
+}
+.action-menu__item--danger .action-menu__icon {
+  color: inherit;
+}
+
+/* The KPT lane a card belongs to, shown in its detail panel — the panel is
+   the one place the lane isn't obvious from position. Reuses the lane tints
+   the buckets already carry. */
+.badge--kpt-keep {
+  background: var(--prio-low-bg);
+  color: var(--prio-low-fg);
+}
+.badge--kpt-problem {
+  background: var(--prio-high-bg);
+  color: var(--prio-high-fg);
+}
+.badge--kpt-try {
+  background: var(--wip-bg);
+  color: var(--wip-fg);
+}
+
+/* A sticky opens on tap now, like a board card. */
+.kpt-card:not(.kpt-card--static) {
+  cursor: pointer;
+}
+/* The retro screen makes room for its panel the way the board does, rather
+   than letting it cover the Try lane. */
+.kpt {
+  transition: padding-right 140ms ease-out;
+}
+@media (min-width: 900px) {
+  .kpt--panel-open {
+    padding-right: calc(var(--detail-panel-w) + 20px);
+  }
+}
