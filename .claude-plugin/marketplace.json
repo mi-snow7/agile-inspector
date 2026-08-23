@@ -1,0 +1,12 @@
+{
+  "name": "agile-inspector",
+  "owner": { "name": "mi-snow7" },
+  "description": "An AI scrum master for a human team. The decisions stay the team's; the AI takes the facilitator seat nobody is sitting in. Kanban and Sprint alike",
+  "plugins": [
+    {
+      "name": "agile",
+      "source": "./plugins/agile",
+      "description": "An AI scrum master for a human team, on the tracker you already use (GitHub Issues or Jira). It chairs the standup, refinement, the KPT retrospective and the sprint, files items and works the board. It does not go near your implementation"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# Dependencies / build output (board-ui keeps its own .gitignore too)
+node_modules/
+dist/
+.env
+
+# Editors
+.idea/
+.vscode/
+
+# Machine-local Claude Code settings. Narrow on purpose — shared config
+# (.claude/settings.json) and project skills/agents under .claude/ are meant
+# to be committed.
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local agile state — belongs to the project using this plugin, not to the plugin repo
+.agile/
+
+# The public repository, attached as a submodule. It is a build artifact —
+# tools/release.sh writes it and nothing else should. Not ignored (git tracks
+# the pointer), listed here only so the reason is where somebody looks first.
