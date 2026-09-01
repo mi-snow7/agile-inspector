@@ -2,18 +2,43 @@
 
 *[English](README.md) / 日本語*
 
-**プロダクトの意思決定を担うのは人間のチーム。AI はスクラムマスターの役割に徹する。**
+**Claude Code プラグイン。チームにいないスクラムマスターの役割を AI が引き受ける。**
 
-Claude Code プラグイン / marketplace。専任のスクラムマスターがいない、アジャイルに
-不慣れなチームでも、デイリースタンドアップ・バックログリファインメント・KPT振り返り・
-スプリントの開始と締めを、型どおりに回せるようにする。**このプラグインの AI は進行と
-記録に徹し、実装には立ち入らない。**
+9つのスラッシュコマンドがセレモニーの進行と盤面の管理を担う ── デイリーは
+`/agile:standup`、バックログリファインメントは `/agile:refine`、KPT振り返りは
+`/agile:retro`、スプリントの開始と締めは `/agile:sprint-start` /
+`/agile:sprint-close`。作業そのものには `/agile:board` `/agile:backlog`
+`/agile:issue`、セットアップに `/agile:init`。背後の課題管理は
+**GitHub Issues または Jira**、Kanban / Sprint 両対応で、`/agile:init` で決めて
+`.agile/config.yml` に残す。
+
+専任のスクラムマスターがいない、アジャイルに不慣れなチームでも、これらを型どおりに
+回せるようにする。**意思決定はチームのもの。AI は進行と記録に徹し、実装には
+立ち入らない。**
+
+チャットで完結する操作はテキストで、複数を見比べる場面はボードで扱う ──
+GitHub Issues ならローカルのドラッグ&ドロップ盤、Jira なら Jira 自身の盤面。
+
+![スプリントボード。ストーリーのカードにサブタスクが入れ子で並び、右に詳細パネルが開いている](docs/images/sprint_board.png)
+
+<table>
+<tr>
+<td width="33%"><a href="docs/images/backlog.png"><img src="docs/images/backlog.png" alt="優先度バケットに分かれたバックログ"></a></td>
+<td width="33%"><a href="docs/images/swimlane_by_parent.png"><img src="docs/images/swimlane_by_parent.png" alt="親ストーリーごとのスイムレーン"></a></td>
+<td width="33%"><a href="docs/images/swimlane_by_assignee.png"><img src="docs/images/swimlane_by_assignee.png" alt="担当者ごとのスイムレーン"></a></td>
+</tr>
+<tr>
+<td><b>バックログ</b> — 優先度バケット間のドラッグが、ここでの「優先度を変える」</td>
+<td><b>親課題</b> — ストーリーごとの完了度</td>
+<td><b>担当者</b> — 誰が何を持っているか。デイリー用</td>
+</tr>
+</table>
+
+> 上の画面はデモ用リポジトリ。**表示言語は `.agile/config.yml` の `locale` に従う**
+> （この例は `en`）。
 
 コードを誰が書くかは問わない。実装の多くが AI 経由になった今も、**何を作るか・いつまでに
 約束するか・何をもって完了とするか**を決めるのはチームで、アジャイルが働くのはそこ。
-
-課題管理のバックエンドは **GitHub Issues または Jira** から選ぶ
-（`/agile:init` で決めて `.agile/config.yml` に残す）。Kanban / Sprint 両対応。
 
 > **Issue をまるごと AI に自律実装させるオーケストレーション型のツールとは、目的が
 > 異なる。** コードの大半を AI が書く時代でも、**期間を区切って目標を約束し、技術的な
@@ -23,8 +48,6 @@ Claude Code プラグイン / marketplace。専任のスクラムマスターが
 **プラグインが守らせるのは、チームが決めたことだけ。** WIP上限・完了の定義（DoD）・
 スプリントの長さ・話す言語は、すべて `.agile/` に置かれ、リポジトリにコミットされ、
 チームが直接編集できる。プラグインはそれに従うのであって、独自のルールを持ち込まない。
-
-チャットで完結する操作はテキストで、複数を見比べる場面はローカルのビジュアルボードで扱う。
 
 ## バックエンド
 

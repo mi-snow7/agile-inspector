@@ -1,4 +1,5 @@
 import { parseParentNumber, extractSection, parentMarker, sectionMarker, heading } from "./issueBody.js";
+import { parentLine, uiLocale } from "./i18n.js";
 
 let pass = 0, fail = 0;
 const check = (name, actual, expected) => {
@@ -60,6 +61,28 @@ console.log("\n== locale を途中で切り替えたとき ==");
 const oldJa = [sectionMarker("ac"), heading("ja", "ac"), "- [ ] 30日分が出る"].join("\n");
 check("マーカーは言語に依存しない", extractSection(oldJa, "ac", null).includes("30日分"), true);
 check("見出しだけの旧本文も読める", extractSection("## 詳細\n昔の書き方", "detail", "## 詳細").includes("昔の書き方"), true);
+
+console.log("\n== 親行が locale に従っても読み戻せるか ==");
+// The human half of the parent link follows `locale` (docs/backends/github.md
+// W10) while the marker never changes, so the parser has to survive either
+// language — including a repository holding both, which is what a team that
+// switched languages mid-project actually has. The code wrote 親: #N
+// unconditionally until 0.2.2, so the en half had never been exercised.
+for (const lang of ["en", "ja"]) {
+  const body = `${parentMarker(14)}\n${parentLine(lang, 14)}`;
+  check(`${lang}: 親行つきの本文が読める`, parseParentNumber(body), 14);
+  check(`${lang}: マーカーを消しても親行だけで読める`, parseParentNumber(parentLine(lang, 14)), 14);
+}
+// A body written in one language, re-read after the team switched to the
+// other. The marker is what carries it, which is the reason it exists.
+check("言語を切り替えても marker が効く", parseParentNumber(`${parentMarker(9)}\n${parentLine("ja", 9)}`), 9);
+
+console.log("\n== uiLocale の畳み込み ==");
+check("ja はそのまま", uiLocale({ locale: "ja" }), "ja");
+check("en はそのまま", uiLocale({ locale: "en" }), "en");
+check("第三言語は en に落ちる", uiLocale({ locale: "ko" }), "en");
+check("locale 未設定は en", uiLocale({}), "en");
+check("config が無くても落ちない", uiLocale(null), "en");
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

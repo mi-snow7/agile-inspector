@@ -2,20 +2,45 @@
 
 *English / [日本語](README.ja.md)*
 
-**The decisions are the team's. The AI takes the scrum master's role.**
+**A Claude Code plugin: the scrum master a team hasn't got.**
 
-A Claude Code plugin and marketplace. It lets a team with no dedicated scrum
-master — and no particular experience with agile — run the daily standup,
-backlog refinement, KPT retrospectives, and the start and close of a sprint,
-properly and in order. **This plugin's AI chairs and records; it does not go near
-the implementation.**
+Nine slash commands chair the ceremonies and keep the board — `/agile:standup`
+for the daily, `/agile:refine` for backlog refinement, `/agile:retro` for KPT,
+`/agile:sprint-start` and `/agile:sprint-close` for a sprint, plus
+`/agile:board`, `/agile:backlog` and `/agile:issue` for the work itself, and
+`/agile:init` to set it all up. The tracker behind them is **GitHub Issues or
+Jira**, in kanban or sprint mode, chosen at `/agile:init` and recorded in
+`.agile/config.yml`.
+
+It lets a team with no dedicated scrum master — and no particular experience
+with agile — run those properly and in order. **The decisions stay the team's:
+the AI chairs and records, and does not go near the implementation.**
+
+Anything that fits in a conversation is handled as text; anything that means
+comparing several things at once gets a board — a local, drag-and-drop one on
+GitHub Issues, Jira's own where the team is on Jira.
+
+![The sprint board, with a story's sub-tasks nested inside its card and the detail panel open](docs/images/sprint_board.png)
+
+<table>
+<tr>
+<td width="33%"><a href="docs/images/backlog.png"><img src="docs/images/backlog.png" alt="The backlog, grouped into priority buckets"></a></td>
+<td width="33%"><a href="docs/images/swimlane_by_parent.png"><img src="docs/images/swimlane_by_parent.png" alt="The board in swimlanes, one lane per parent story"></a></td>
+<td width="33%"><a href="docs/images/swimlane_by_assignee.png"><img src="docs/images/swimlane_by_assignee.png" alt="The board in swimlanes, one lane per assignee"></a></td>
+</tr>
+<tr>
+<td><b>Backlog</b> — dragging a row between priority buckets is what reprioritising means here</td>
+<td><b>By parent</b> — how close each story is to done</td>
+<td><b>By assignee</b> — who is holding what, for the daily</td>
+</tr>
+</table>
+
+> The screens above are a demo repository. **The language follows `locale` in
+> `.agile/config.yml`** — this one is set to `en`.
 
 It takes no view on who writes the code. However much of it now comes from an AI,
 **what to build, what to commit to, and what counts as done** stay the team's
 calls — and that is where agile does its work.
-
-The tracker behind it is **GitHub Issues or Jira**, chosen at `/agile:init` and
-recorded in `.agile/config.yml`. Kanban and Sprint modes are both supported.
 
 > **This has a different purpose from an orchestration tool that hands whole
 > issues to AI agents.** However much of the code is generated, **committing to a
@@ -27,9 +52,6 @@ recorded in `.agile/config.yml`. Kanban and Sprint modes are both supported.
 limits, the Definition of Done, the sprint length, the language it speaks — all
 of it lives in `.agile/`, committed to the repository and edited by the team. The
 plugin follows those; it brings no rules of its own.
-
-Anything that fits in a conversation is handled as text; anything that means
-comparing several things at once gets a visual board.
 
 ## Backends
 

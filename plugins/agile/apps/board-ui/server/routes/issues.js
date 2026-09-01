@@ -2,6 +2,7 @@ import { Router } from "express";
 import { gh, ghJson } from "../gh.js";
 import { loadPmConfig, activeSprint } from "../config.js";
 import { computeColumn, countsTowardWip, parseParentNumber } from "../columns.js";
+import { openSubtasksMessage, uiLocale, wipLimitMessage } from "../i18n.js";
 
 export const issuesRouter = Router();
 
@@ -96,11 +97,17 @@ issuesRouter.patch("/issues/:number/status", async (req, res, next) => {
         // work item, so moving one into Doing/Review can't breach the limit.
         if (countsTowardWip({ number, labels: current.labels }, brokenDownParents)) {
           const milestone = activeSprint(cfg);
-          const currentCount = await countWorkItemsInColumn(`status:${column}`, milestone, brokenDownParents);
+          // TARGET_LABEL, not `status:${column}` — the column keys are
+          // doing/review and the labels are status:in-progress/status:in-review,
+          // so the interpolated form asked for `status:review`, matched
+          // nothing, counted 0, and let every move through. The limit has
+          // never once fired on a drag; the board showed 3/3 beside a column
+          // that would still accept a fourth card.
+          const currentCount = await countWorkItemsInColumn(TARGET_LABEL[column], milestone, brokenDownParents);
           if (currentCount + 1 > limit) {
             res.status(409).json({
               error: "wip_exceeded",
-              message: `${column} は上限 ${limit} 件です（現在 ${currentCount} 件）。`,
+              message: wipLimitMessage(uiLocale(cfg), column, limit, currentCount),
               limit,
               currentCount,
             });
@@ -137,10 +144,7 @@ issuesRouter.patch("/issues/:number/status", async (req, res, next) => {
       if (open.length > 0) {
         res.status(409).json({
           error: "subtasks_open",
-          message: `未完了のサブタスクが ${open.length} 件あります（${open
-            .slice(0, 3)
-            .map((t) => `#${t.number}`)
-            .join(", ")}${open.length > 3 ? ` ほか${open.length - 3}件` : ""}）。`,
+          message: openSubtasksMessage(uiLocale(cfg), open),
           subtasks: open.map((t) => ({ number: t.number, title: t.title })),
         });
         return;

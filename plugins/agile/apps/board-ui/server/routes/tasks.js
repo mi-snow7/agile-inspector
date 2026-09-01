@@ -2,12 +2,19 @@ import { Router } from "express";
 import { gh, ghJson, getOwnerRepo } from "../gh.js";
 import { loadPmConfig } from "../config.js";
 import { isSubtask } from "../columns.js";
-import { extractSection, heading, parentMarker, sectionMarker } from "../issueBody.js";
+import {
+  extractSection,
+  heading,
+  LEGACY_DETAIL_HEADING,
+  parentMarker,
+  sectionMarker,
+  stripParentLines,
+} from "../issueBody.js";
+import { msg, parentLine, uiLocale } from "../i18n.js";
 
 export const tasksRouter = Router();
 
 const TARGET_LABEL = { todo: "status:todo", doing: "status:in-progress", review: "status:in-review" };
-const LEGACY_DETAIL_HEADER = "## 詳細";
 
 function issueNumberFromUrl(url) {
   const m = url.trim().match(/\/issues\/(\d+)\s*$/);
@@ -15,8 +22,7 @@ function issueNumberFromUrl(url) {
 }
 
 async function locale() {
-  const cfg = await loadPmConfig();
-  return cfg?.locale === "ja" ? "ja" : "en";
+  return uiLocale(await loadPmConfig());
 }
 
 /**
@@ -27,7 +33,7 @@ async function locale() {
  * text goes in a 詳細 section under it.
  */
 function buildTaskBody(parentNumber, detail, lang) {
-  const head = `${parentMarker(parentNumber)}\n親: #${parentNumber}`;
+  const head = `${parentMarker(parentNumber)}\n${parentLine(lang, parentNumber)}`;
   const text = (detail ?? "").trim();
   if (!text) return head;
   return `${head}\n\n${sectionMarker("detail")}\n${heading(lang, "detail")}\n${text}`;
@@ -39,12 +45,9 @@ function buildTaskBody(parentNumber, detail, lang) {
  * instead of quietly discarding what was there. */
 export function parseTaskDetail(body) {
   const text = body ?? "";
-  const section = extractSection(text, "detail", LEGACY_DETAIL_HEADER);
+  const section = extractSection(text, "detail", LEGACY_DETAIL_HEADING);
   if (section != null) return section.replace(/^##[^\n]*\n?/, "").trim();
-  return text
-    .replace(/<!--\s*agile:parent[^>]*-->/g, "")
-    .replace(/^\s*親(?:ストーリー)?\s*[:：]\s*#\d+\s*$/gm, "")
-    .trim();
+  return stripParentLines(text).trim();
 }
 
 // Breakdown only happens for parents already pulled into the current sprint
@@ -56,7 +59,7 @@ tasksRouter.post("/stories/:number/tasks", async (req, res, next) => {
     const parentNumber = req.params.number;
     const { title, column, assignee, detail } = req.body ?? {};
     if (!title) {
-      res.status(400).json({ error: "missing_fields", message: "title は必須です。" });
+      res.status(400).json({ error: "missing_fields", message: msg(await locale(), "A title is required.") });
       return;
     }
 
@@ -70,13 +73,16 @@ tasksRouter.post("/stories/:number/tasks", async (req, res, next) => {
     // Story, Task and Bug can all be broken down (Jira's rule); only a
     // sub-task can't, since the hierarchy is two levels deep by design.
     if (isSubtask(parent)) {
-      res.status(400).json({ error: "parent_is_subtask", message: "サブタスクをさらに分解することはできません。" });
+      res.status(400).json({ error: "parent_is_subtask", message: msg(await locale(), "A sub-task cannot be broken down further.") });
       return;
     }
     if (cfg.mode === "sprint" && !parent.milestone) {
       res.status(400).json({
         error: "no_milestone",
-        message: "この Issue はまだスプリントに入っていません。/agile:sprint-start でスプリントに入れてから分解してください。",
+        message: msg(
+          await locale(),
+          "This item is not in the sprint yet. Put it in one with /agile:sprint-start before breaking it down.",
+        ),
       });
       return;
     }
@@ -120,7 +126,7 @@ tasksRouter.patch("/stories/:parentNumber/tasks/:number", async (req, res, next)
     const number = req.params.number;
     const { title, assignee, detail } = req.body ?? {};
     if (!title) {
-      res.status(400).json({ error: "missing_fields", message: "title は必須です。" });
+      res.status(400).json({ error: "missing_fields", message: msg(await locale(), "A title is required.") });
       return;
     }
 

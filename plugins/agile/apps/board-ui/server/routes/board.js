@@ -5,6 +5,7 @@ import { IDENTITY } from "../identity.js";
 import { loadTemplates } from "../templates.js";
 import { parseTaskDetail } from "./tasks.js";
 import { hasLabel, computeColumn, countsTowardWip, issueType, isSubtask, parseParentNumber } from "../columns.js";
+import { msg, uiLocale } from "../i18n.js";
 
 export const boardRouter = Router();
 
@@ -108,7 +109,7 @@ boardRouter.get("/config", async (_req, res) => {
     // The screen has two languages: Japanese when the project chose it,
     // English for everything else. `locale` itself is free-form — the model
     // follows whatever it says — but this UI only ships the two.
-    locale: cfg.locale === "ja" ? "ja" : "en",
+    locale: uiLocale(cfg),
   });
 });
 
@@ -129,7 +130,7 @@ boardRouter.get("/board", async (_req, res, next) => {
   try {
     const cfg = await loadPmConfig();
     if (!cfg) {
-      res.status(400).json({ error: "not_initialized", message: "Run /agile:init in this project first." });
+      res.status(400).json({ error: "not_initialized", message: msg(uiLocale(cfg), "Run /agile:init in this project first.") });
       return;
     }
     const milestone = activeSprint(cfg);
@@ -230,6 +231,13 @@ boardRouter.get("/board", async (_req, res, next) => {
     res.json({
       repo: ownerRepo,
       mode: cfg.mode,
+      // The screen sets its language from this, not from /api/config — the
+      // board payload is what every render already waits for, so it is the
+      // one response guaranteed to arrive before any text is drawn. It was
+      // missing here while the client read it anyway, which left the UI
+      // with an undefined locale and no way to tell: `t()` fell through to
+      // the Japanese table for every project, whatever `locale` said.
+      locale: uiLocale(cfg),
       sprintMilestone: milestone,
       // Sent with the board so the browser can apply the same completion rule
       // the server enforces — a disabled button explains itself, where a

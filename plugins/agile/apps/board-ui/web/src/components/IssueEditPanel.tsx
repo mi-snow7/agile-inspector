@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { t } from "../i18n";
 import { createStory, deleteStory, getStory, updateStory } from "../api";
+import { COLUMN_LABELS } from "../columns";
 
 /** Sub-tasks aren't created here — they're broken out of a parent during
  * planning, from the card's own "+ Sub-task". */
@@ -205,8 +206,8 @@ export function IssueEditPanel({ storyNumber, assignees, templates, onClose, onS
                 <label>
                   {t("Add to")}
                   <select value={column} onChange={(e) => setColumn(e.target.value as typeof column)}>
-                    <option value="backlog">Backlog</option>
-                    <option value="todo">To Do</option>
+                    <option value="backlog">{COLUMN_LABELS.backlog}</option>
+                    <option value="todo">{COLUMN_LABELS.todo}</option>
                   </select>
                 </label>
               )}

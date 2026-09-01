@@ -2,6 +2,7 @@ import { Router } from "express";
 import { gh, ghJson, getOwnerRepo } from "../gh.js";
 import { loadPmConfig } from "../config.js";
 import { hasLabel } from "../columns.js";
+import { msg, retroLabelDescription, uiLocale, unknownLaneMessage } from "../i18n.js";
 
 export const retroRouter = Router();
 
@@ -85,7 +86,7 @@ retroRouter.get("/retro", async (_req, res, next) => {
   try {
     const cfg = await loadPmConfig();
     if (!cfg) {
-      res.status(400).json({ error: "not_initialized", message: "Run /agile:init in this project first." });
+      res.status(400).json({ error: "not_initialized", message: msg(uiLocale(cfg), "Run /agile:init in this project first.") });
       return;
     }
     const ownerRepo = await getOwnerRepo();
@@ -125,6 +126,7 @@ retroRouter.get("/retro", async (_req, res, next) => {
 // one appears every retrospective. --force keeps it idempotent, so every
 // participant's first card can safely try.
 async function ensureRoundLabel(round) {
+  const lang = uiLocale(await loadPmConfig());
   await gh([
     "label",
     "create",
@@ -132,7 +134,7 @@ async function ensureRoundLabel(round) {
     "--color",
     "ededed",
     "--description",
-    `振り返り: ${round} の回`,
+    retroLabelDescription(lang, round),
     "--force",
   ]);
 }
@@ -146,7 +148,7 @@ retroRouter.post("/retro/cards", async (req, res, next) => {
   try {
     const { lane, title, round } = req.body ?? {};
     if (!LANE_LABEL[lane] || !title?.trim()) {
-      res.status(400).json({ error: "missing_fields", message: "lane と title は必須です。" });
+      res.status(400).json({ error: "missing_fields", message: msg(uiLocale(await loadPmConfig()), "lane and title are required.") });
       return;
     }
     // The client sends the round it is displaying, so a card written at
@@ -190,7 +192,7 @@ retroRouter.patch("/retro/cards/:number", async (req, res, next) => {
     if (body !== undefined) args.push("--body-file", "-");
     if (lane) {
       if (!LANE_LABEL[lane]) {
-        res.status(400).json({ error: "bad_lane", message: `不明なレーン: ${lane}` });
+        res.status(400).json({ error: "bad_lane", message: unknownLaneMessage(uiLocale(await loadPmConfig()), lane) });
         return;
       }
       // Read the current labels first: --remove-label on a label the issue
@@ -202,7 +204,7 @@ retroRouter.patch("/retro/cards/:number", async (req, res, next) => {
       args.push("--add-label", LANE_LABEL[lane]);
     }
     if (args.length === 3) {
-      res.status(400).json({ error: "nothing_to_do", message: "lane / title / body のいずれかが必要です。" });
+      res.status(400).json({ error: "nothing_to_do", message: msg(uiLocale(await loadPmConfig()), "One of lane, title or body is required.") });
       return;
     }
     await gh(args, body !== undefined ? { input: body } : undefined);

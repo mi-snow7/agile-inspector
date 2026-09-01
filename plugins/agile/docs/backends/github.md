@@ -359,11 +359,18 @@ Parent: #<parent>"
 
 PARENT_ID=$(gh api repos/$OWNER_REPO/issues/<parent> --jq .id)
 CHILD_ID=$(gh api repos/$OWNER_REPO/issues/<child> --jq .id)
-gh api -X POST repos/$OWNER_REPO/issues/<parent>/sub_issues -f sub_issue_id="$CHILD_ID"
+gh api -X POST repos/$OWNER_REPO/issues/<parent>/sub_issues -F sub_issue_id="$CHILD_ID"
 ```
 
 The second line is for humans and follows `locale`; **the HTML comment is what
 the board reads**, so it is never optional.
+
+> **`-F`, not `-f`.** `-f` sends every value as a string and this endpoint
+> rejects that — `422 Invalid property /sub_issue_id: "5306909587" is not of
+> type 'integer'`. The failure is quiet in the worst way: the sub-task has
+> already been created by the line above, so what is left is a child with a
+> parent marker in its body and no GitHub-native link. The board still nests
+> it (it reads the body), which is exactly why nobody notices on the board.
 
 If the sub_issues API is unavailable (organisation settings can make it fail),
 fall back to appending a `- [ ] #<child>` task list to the parent's body —

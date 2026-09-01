@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { gh, ghJson } from "../gh.js";
 import { loadPmConfig, activeSprint } from "../config.js";
+import { msg, uiLocale } from "../i18n.js";
 
 export const storiesRouter = Router();
 
@@ -61,7 +62,7 @@ storiesRouter.post("/stories", async (req, res, next) => {
   try {
     const { title, type, priority, points, column, assignee, body: rawBody } = req.body ?? {};
     if (!title) {
-      res.status(400).json({ error: "missing_fields", message: "title は必須です。" });
+      res.status(400).json({ error: "missing_fields", message: msg(uiLocale(await loadPmConfig()), "A title is required.") });
       return;
     }
     // Story / Task / Bug are peers, so creation takes the type the same way
