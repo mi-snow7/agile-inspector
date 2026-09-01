@@ -26,9 +26,20 @@ export type Locale = "ja" | "en";
  */
 let current: Locale = "en";
 
-/** Set once, from the board payload, before anything renders text. */
-export function setLocale(locale: Locale) {
-  current = locale;
+/**
+ * Set once, from the board payload, before anything renders text.
+ *
+ * **Anything that is not `ja` becomes `en`**, including a field the server
+ * did not send. That is not defensiveness for its own sake: the parameter was
+ * typed `Locale` and assigned straight through, so when `/api/board` turned
+ * out not to carry `locale` at all, `current` became `undefined` — and
+ * `t()`'s `current === "en"` test then failed for every string, rendering the
+ * whole board in Japanese whatever the project had chosen. TypeScript could
+ * not see it because the lie was in the JSON, not in the call. Normalising
+ * here means the worst a missing field can now do is fall back to English.
+ */
+export function setLocale(locale: Locale | undefined) {
+  current = locale === "ja" ? "ja" : "en";
 }
 
 export function getLocale(): Locale {

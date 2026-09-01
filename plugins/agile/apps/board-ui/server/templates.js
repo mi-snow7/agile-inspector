@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { loadPmConfig, CONFIG_DIR } from "./config.js";
 import { PROJECT_ROOT } from "./projectRoot.js";
+import { uiLocale } from "./i18n.js";
 
 /**
  * Issue bodies used to be assembled from a form: persona, feature, value, a
@@ -180,7 +181,7 @@ export function defaultTemplates(lang = "ja") {
  */
 export async function loadTemplates(cwd = PROJECT_ROOT) {
   const cfg = await loadPmConfig(cwd);
-  const fallback = defaultTemplates(cfg?.locale === "ja" ? "ja" : "en");
+  const fallback = defaultTemplates(uiLocale(cfg));
   const entries = await Promise.all(
     TEMPLATE_TYPES.map(async (type) => {
       try {

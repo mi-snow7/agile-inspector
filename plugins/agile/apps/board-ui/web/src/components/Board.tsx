@@ -18,7 +18,7 @@ import {
   type SubtaskItem,
 } from "../api";
 import { columnsFor } from "../columns";
-import { buildLanes, isLaneMode, LANE_MODES_BY_MODE, LANE_MODE_LABELS, type LaneMode } from "../lanes";
+import { buildLanes, isLaneMode, LANE_MODES_BY_MODE, laneModeLabels, type LaneMode } from "../lanes";
 import { BacklogView, type PrioBucket } from "./BacklogView";
 import { completionBlockers } from "../completion";
 import { Column } from "./Column";
@@ -684,6 +684,7 @@ export function Board() {
   // e.g. `?lane=assignee` while in kanban — falls back to the plain board
   // rather than rendering a grouping that mode deliberately doesn't have.
   const laneModes = LANE_MODES_BY_MODE[board.mode];
+  const laneLabels = laneModeLabels();
   const activeLaneMode = laneModes.includes(laneMode) ? laneMode : "none";
 
   const detailTarget = detailNumber != null ? findDetailTarget(board, detailNumber) : null;
@@ -753,7 +754,7 @@ export function Board() {
                 aria-pressed={activeLaneMode === key}
                 onClick={() => changeLaneMode(key)}
               >
-                {LANE_MODE_LABELS[key]}
+                {laneLabels[key]}
               </button>
             ))}
           </div>

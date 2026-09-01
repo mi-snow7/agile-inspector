@@ -1,6 +1,6 @@
 {
   "name": "agile",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "description": "An AI scrum master for a human team: the decisions stay the team's, and the AI takes the facilitator role a team without a dedicated scrum master is missing. It does not go near the implementation. Runs kanban or sprint on GitHub Issues or Jira — filing items (Story/Task/Bug), showing the board for the current mode and moving work across it, keeping the backlog prioritised and refined, the daily standup, the KPT retrospective, and the start and close of a sprint. Uses the gh and Atlassian CLIs, no MCP. A drag-and-drop visual board opens whenever a step calls for one.",
   "author": { "name": "mi-snow7" },

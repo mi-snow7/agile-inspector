@@ -27,12 +27,22 @@ export const LANE_MODES_BY_MODE: Record<BoardResponse["mode"], LaneMode[]> = {
   kanban: ["none", "expedite"],
 };
 
-export const LANE_MODE_LABELS: Record<LaneMode, string> = {
-  none: t("None"),
-  parent: t("By parent"),
-  assignee: t("By assignee"),
-  expedite: "Expedite",
-};
+/**
+ * A function, not a constant — the locale arrives with the board payload, so
+ * a `t()` evaluated while the module graph loads freezes on whatever `current`
+ * happened to be at import time. This was a constant, and the swimlane buttons
+ * were the one part of the board that stayed English on a Japanese project
+ * (`i18n.ts` warns about exactly this; `tools/check-contract.sh` now catches
+ * an exported one, which is how this survived).
+ */
+export function laneModeLabels(): Record<LaneMode, string> {
+  return {
+    none: t("None"),
+    parent: t("By parent"),
+    assignee: t("By assignee"),
+    expedite: t("Expedite"),
+  };
+}
 
 export function isLaneMode(value: unknown): value is LaneMode {
   return value === "none" || value === "parent" || value === "assignee" || value === "expedite";

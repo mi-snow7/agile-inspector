@@ -69,14 +69,38 @@ export function sectionMarker(name) {
   return comment(MARKER[name] ?? name);
 }
 
-/** `<!-- agile:parent #12 -->`, falling back to the pre-marker wording
- * ("親: #12" / "親ストーリー: #12") so existing sub-tasks keep nesting. */
+/** `<!-- agile:parent #12 -->`, falling back to the visible parent line so a
+ * sub-task whose marker was deleted by a hand edit on github.com still nests.
+ *
+ * Two spellings of that line exist because it follows `locale`: the Japanese
+ * one ("親: #12", and the older "親ストーリー: #12") is what every sub-task
+ * written before 0.2.2 carries, since the code emitted it whatever the
+ * project's language was. **Both stay readable forever** — a repository that
+ * switched languages holds a mixture, and so does one seeded before the fix.
+ */
 const PARENT_MARKER_RE = /<!--\s*agile:parent\s*#(\d+)\s*-->/;
 const PARENT_LEGACY_RE = /親(?:ストーリー)?\s*[:：]\s*#(\d+)/;
+const PARENT_EN_RE = /^\s*Parent\s*:\s*#(\d+)\s*$/m;
+
+/** The heading a sub-task's 詳細 section had before it carried a marker.
+ * Japanese because every body written then was, whatever the project's
+ * language — a value measured against existing data, not a translation. */
+export const LEGACY_DETAIL_HEADING = SECTION_HEADINGS.ja.detail;
+
+/** Removes the parent link in every spelling it has ever been written in, so
+ * what is left is the part a person wrote. Used when a sub-task has no
+ * `agile:detail` section to read — one written before the section existed, or
+ * edited straight on github.com. */
+export function stripParentLines(text) {
+  return (text ?? "")
+    .replace(/<!--\s*agile:parent[^>]*-->/g, "")
+    .replace(/^\s*親(?:ストーリー)?\s*[:：]\s*#\d+\s*$/gm, "")
+    .replace(/^\s*Parent\s*:\s*#\d+\s*$/gm, "");
+}
 
 export function parseParentNumber(body) {
   const text = body ?? "";
-  const m = text.match(PARENT_MARKER_RE) ?? text.match(PARENT_LEGACY_RE);
+  const m = text.match(PARENT_MARKER_RE) ?? text.match(PARENT_LEGACY_RE) ?? text.match(PARENT_EN_RE);
   return m ? Number(m[1]) : null;
 }
 
